@@ -1,3 +1,4 @@
+// src/app/page.js
 import axios from "axios";
 
 export default async function Home() {

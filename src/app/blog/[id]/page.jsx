@@ -1,3 +1,4 @@
+// src/app/blog/[id]/page.js
 import axios from "axios";
 
 export default async function BlogPost({ params }) {
