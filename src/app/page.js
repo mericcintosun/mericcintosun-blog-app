@@ -1,11 +1,16 @@
-import path from "path";
-import { promises as fs } from "fs";
+import axios from "axios";
 
 export default async function Home() {
-  // JSON dosyasını public klasöründen server-side olarak çek
-  const filePath = path.join(process.cwd(), "public", "data", "blogs.json");
-  const jsonData = await fs.readFile(filePath, "utf-8");
-  const blogs = JSON.parse(jsonData);
+  let blogs = [];
+
+  try {
+    const response = await axios.get(
+      "https://public-api.wordpress.com/wp/v2/sites/mericcintosunadminblog.wordpress.com/posts"
+    );
+    blogs = response.data; // API'den gelen veriyi alın
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
 
   return (
     <div style={{ padding: "20px" }}>
@@ -21,7 +26,7 @@ export default async function Home() {
               borderRadius: "10px",
             }}
           >
-            <h2>{blog.title}</h2>
+            <h2>{blog.title.rendered}</h2>
             <p>by {blog.author}</p>
             <a href={`/blog/${blog.id}`}>Read More</a>
           </div>

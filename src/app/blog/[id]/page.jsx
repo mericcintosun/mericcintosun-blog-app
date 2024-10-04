@@ -1,15 +1,18 @@
-import path from "path";
-import { promises as fs } from "fs";
+import axios from "axios";
 
 export default async function BlogPost({ params }) {
   const { id } = params;
 
-  // JSON dosyasını server-side olarak oku
-  const filePath = path.join(process.cwd(), "public", "data", "blogs.json");
-  const jsonData = await fs.readFile(filePath, "utf-8");
-  const blogs = JSON.parse(jsonData);
+  let blog = null;
 
-  const blog = blogs.find((b) => b.id.toString() === id);
+  try {
+    const response = await axios.get(
+      `https://public-api.wordpress.com/wp/v2/sites/mericcintosunadminblog.wordpress.com/posts/${id}`
+    );
+    blog = response.data; // API'den gelen veriyi alın
+  } catch (error) {
+    console.error("Error fetching post:", error);
+  }
 
   if (!blog) {
     return <h1>Blog Not Found</h1>;
@@ -17,9 +20,9 @@ export default async function BlogPost({ params }) {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>{blog.title}</h1>
+      <h1>{blog.title.rendered}</h1>
       <p>by {blog.author}</p>
-      <p>{blog.content}</p>
+      <div dangerouslySetInnerHTML={{ __html: blog.content.rendered }} />
     </div>
   );
 }
