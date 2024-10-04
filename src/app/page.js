@@ -1,17 +1,11 @@
 // src/app/page.js
-import axios from "axios";
-
 export default async function Home() {
-  let blogs = [];
+  const response = await fetch(
+    "https://public-api.wordpress.com/wp/v2/sites/mericcintosunadminblog.wordpress.com/posts",
+    { cache: "no-store" } // Her zaman güncel veri almak için cache'i devre dışı bırakın
+  );
 
-  try {
-    const response = await axios.get(
-      "https://public-api.wordpress.com/wp/v2/sites/mericcintosunadminblog.wordpress.com/posts"
-    );
-    blogs = response.data; // API'den gelen veriyi alın
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-  }
+  const blogs = await response.json(); // API'den gelen veriyi alın
 
   return (
     <div style={{ padding: "20px" }}>
