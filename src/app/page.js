@@ -1,9 +1,11 @@
+import path from "path";
+import { promises as fs } from "fs";
+
 export default async function Home() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/data/blogs.json`);
-
-  console.log("data/blogs.json");
-
-  const blogs = await res.json();
+  // JSON dosyasını public klasöründen server-side olarak çek
+  const filePath = path.join(process.cwd(), "public", "data", "blogs.json");
+  const jsonData = await fs.readFile(filePath, "utf-8");
+  const blogs = JSON.parse(jsonData);
 
   return (
     <div style={{ padding: "20px" }}>
